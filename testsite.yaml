@@ -1,0 +1,48 @@
+clients:
+  client1:
+    ip: 127.0.0.1
+    port: 20001
+    room: "Room1"
+    comment: "TestClient1"
+    plugins:
+      Template:
+        active: false
+        config:
+          send_every: 10s
+      File_Exists:
+        active: false
+        config:
+          search_every: 10s
+          file_path: "testfile.test"
+      Clock:
+        active: true
+        config:
+          send_every: 10s
+      Email:
+        active: false
+        config:
+          smtp_server: 'driediger.eu'
+          smtp_port: 25
+      Fas_Logger:
+        active: true
+      TestPayload:
+        active: false
+        config:
+          send_every: 10s
+          payload: true
+      Pushover:
+        active: true
+
+
+inputs:
+  Clock.time_now@client1: notify
+
+actions:
+  log_at_group1:
+    Fas_Logger.info@group1:
+  notify:
+    Pushover.notify@client1:
+
+clientgroups:
+  group1:
+    - client1

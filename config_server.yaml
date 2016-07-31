@@ -1,0 +1,12 @@
+server_ip: 127.0.0.1
+server_port: 20000
+server_role: master
+site_config: testsite.yaml
+logfile: "./server.log"
+plugins:
+  Clock:
+    active: true
+  Pushover:
+    active: true
+  Fas_Logger:
+    active: true

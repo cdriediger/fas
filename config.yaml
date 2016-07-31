@@ -1,0 +1,53 @@
+server_ip: 127.0.0.1
+
+clients:
+  scofield:
+    ip: 127.0.0.1
+    port: 20001
+    room: "Room1"
+    comment: "TestClient1"
+    plugins:
+        Template:
+            active: false
+            config:
+                send_every: 10s
+        File_Exists:
+            active: false
+            config:
+                search_every: 10s
+                file_path: "/root/testfile.test"
+        Clock:
+            active: false
+            config:
+                send_every: 10s
+
+  sucre:
+    ip: 192.168.4.3
+    port: 20001
+    room: "Room2"
+    comment: "TestClient2"
+    plugins:
+        Clock:
+            active: true
+            #config:
+                #send_every: 10s
+
+inputs:
+  Clock.time_now@scofield: Clock.print_time
+
+outputs:
+
+actionlists:
+  #print_time_on_all_clients: Clock.print_time@*
+
+plugins:
+  Template:
+    active: true
+  Email:
+    active: false
+  File_Exists:
+    active: false
+  Clock:
+    active: true
+
+logfile: "./server.log"
