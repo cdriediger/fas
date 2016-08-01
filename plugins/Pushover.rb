@@ -42,7 +42,7 @@ module Pushover
 	})
     res = Net::HTTP.new(url.host, url.port)
     res.use_ssl = url.https?
-    res.verify_mode = OpenSSL::SSL::VERIFY_PEER
+    res.verify_mode = OpenSSL::SSL::VERIFY_NONE
     res.start {|http| http.request(req) }
   end
 
