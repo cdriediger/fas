@@ -50,14 +50,14 @@ class FasServer
     puts '--------------'
     @router = Router.new(@routingtable, @clients)
     @loopback = Loopback.new(@router)
+    @plugins = Plugins.new(@routingtable, @config, @loopback)
+    @routingtable.add_config_actionlists
+    @routingtable.add_config_inputs
+    @reciver = ServerReciver.new($server_ip, $server_port, @router)
   end
 
   def run
-    @reciver = ServerReciver.new($server_ip, $server_port, @router)
     @reciver.run
-    @plugins = Plugins.new(@routingtable, @config, @loopback)
-    @routingtable.add_config_actionlists
-    @routingtable.add_config_inputs 
     exit_requested = false
     Kernel.trap( "SIGTERM" ) { exit_requested = true }
     Kernel.trap( "INT" ) { exit_requested = true }
