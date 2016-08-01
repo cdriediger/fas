@@ -11,7 +11,9 @@ module FasProtocol
 
   def self.decode(packet_json)
     begin
-      return JSON.parse(packet_json)
+      data = JSON.parse(packet_json)
+      data['arguments'] = {} unless data['arguments']
+      return data
     rescue JSON::ParserError => e
       $Log.error("Can not parse JSON-Packet.\n  Error: #{e}\n  JSON: #{packet_json}")
       return false
