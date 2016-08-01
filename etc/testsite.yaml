@@ -13,7 +13,7 @@ clients:
         active: false
         config:
           search_every: 10s
-          file_path: "testfile.test"
+          file_path: 'testfile.test'
       Clock:
         active: true
         config:
@@ -32,15 +32,19 @@ clients:
           payload: true
       Pushover:
         active: true
+        config:
+          use_ssl: true
+          token: 'anbjhwch9nzdnhpkvt3hg3vt36xtwp'
+          user: 'uGF8ao5xrXhdCdBph9vJCrZpp5zJHe'
 
 
 inputs:
-  Clock.time_now@client1: notify
+  Clock.time_now@client1: notify_via_pushover
 
 actions:
   log_at_group1:
     Fas_Logger.info@group1:
-  notify:
+  notify_via_pushover:
     Pushover.notify@client1:
 
 clientgroups:
