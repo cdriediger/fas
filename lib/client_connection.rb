@@ -1,10 +1,9 @@
 class Connection
 
-  def initialize(server_ip, server_port, local_ip, server_offline_scheduler, restart_method)
+  def initialize(server_ip, server_port, local_ip, restart_method)
     @server_ip = server_ip
     @server_port = server_port
     @local_ip = local_ip
-    @server_offline_scheduler = server_offline_scheduler
     @restart_method = restart_method
     @connected = false
   end
@@ -32,9 +31,6 @@ class Connection
       success = @transmitter.connect
       if success
         $Log.info("Connected")
-        #@server_offline_scheduler.in '20s' do
-        #  server_offline
-        #end
         if reconnect
           @restart_method.call
         else
@@ -59,7 +55,6 @@ class Connection
     end
     @connected = false
     $plugins.pause if $plugins
-    @server_offline_scheduler.jobs[0].unschedule unless @server_offline_scheduler.jobs.empty?
     @transmitter.close
     $Log.info("closed server")
   end

@@ -68,13 +68,9 @@ class FasClient
     else
       $local_port = "20001"
     end
-    
-    # Isn't used anymore. Need to remove this
-    # Set server offline after 20 seconds if not reseted by ping reply
-    @server_offline_scheduler = Rufus::Scheduler.new
-    
+     
     # Setup connection to server
-    $connection = Connection.new($server_ip, $server_port, $local_ip, @server_offline_scheduler, method(:restart))
+    $connection = Connection.new($server_ip, $server_port, $local_ip, method(:restart))
     
     # Setup routingtable 
     $routingtable = RoutingTable.new
@@ -98,10 +94,6 @@ class FasClient
   # Send ping peply to server. Needs to be transferd to Connection Class
   def ping_replay(ip, id)
     $Log.info("Got Ping request #{id}")
-    #@server_offline_scheduler.jobs[0].unschedule
-    #@server_offline_scheduler.in '20s' do
-    #  $connection.server_offline
-    #end
     $connection.send('ping reply', id)
   end
 
