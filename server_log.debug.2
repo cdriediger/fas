@@ -1,0 +1,78 @@
+# Logfile created on 2016-08-01 09:05:10 +0200 by logger.rb/53141
+I, [2016-08-01T09:05:10.978847 #8260]  INFO -- : Start FasServer
+I, [2016-08-01T09:05:10.979848 #8260]  INFO -- : Loading ServerConfig from C:/Users/cdriediger/Documents/GitHub/fas/etc/config_server.yaml
+I, [2016-08-01T09:05:10.982850 #8260]  INFO -- : Loading SiteConfig from C:/Users/cdriediger/Documents/GitHub/fas/etc/testsite.yaml
+I, [2016-08-01T09:05:10.983851 #8260]  INFO -- : Using IP: 127.0.0.1
+I, [2016-08-01T09:05:10.984851 #8260]  INFO -- : Using Port: 20000
+I, [2016-08-01T09:05:10.985853 #8260]  INFO -- : Creating new clientGroup *
+I, [2016-08-01T09:05:10.986853 #8260]  INFO -- : Parsing clients:
+I, [2016-08-01T09:05:10.987854 #8260]  INFO -- : New client: ["client1", {"ip"=>"127.0.0.1", "port"=>20001, "room"=>"Room1", "comment"=>"TestClient1", "plugins"=>{"Template"=>{"active"=>false, "config"=>{"send_every"=>"10s"}}, "File_Exists"=>{"active"=>false, "config"=>{"search_every"=>"10s", "file_path"=>"testfile.test"}}, "Clock"=>{"active"=>true, "config"=>{"send_every"=>"10s"}}, "Email"=>{"active"=>false, "config"=>{"smtp_server"=>"driediger.eu", "smtp_port"=>25}}, "Fas_Logger"=>{"active"=>true}, "TestPayload"=>{"active"=>false, "config"=>{"send_every"=>"10s", "payload"=>true}}, "Pushover"=>{"active"=>true}}}]
+I, [2016-08-01T09:05:10.996860 #8260]  INFO -- : Initialized new client #<Client:0x00000002e26998>
+I, [2016-08-01T09:05:11.001863 #8260]  INFO -- : Adding client client1 to clientGroup *
+I, [2016-08-01T09:05:11.002864 #8260]  INFO -- : Creating new clientGroup Room1
+I, [2016-08-01T09:05:11.003865 #8260]  INFO -- : Adding client client1 to clientGroup Room1
+I, [2016-08-01T09:05:11.004866 #8260]  INFO -- : Creating new clientGroup group1
+I, [2016-08-01T09:05:11.004866 #8260]  INFO -- : Adding client client1 to clientGroup group1
+I, [2016-08-01T09:05:11.006867 #8260]  INFO -- : Added Signal 'register' routed to '#<Method: Clients#register>'
+I, [2016-08-01T09:05:11.007868 #8260]  INFO -- : Added Signal 'ping reply' routed to '#<Method: Clients#input_ping_reply>'
+I, [2016-08-01T09:05:11.008868 #8260]  INFO -- : Added Signal 'become master' routed to '#<Method: FasServer#become_master>'
+I, [2016-08-01T09:05:11.010870 #8260]  INFO -- : Added Signal 'client offline' routed to '#<Method: Clients#set_offline>'
+I, [2016-08-01T09:05:11.011871 #8260]  INFO -- : Added Signal 'require plugin' routed to '#<Method: Clients#send_plugin>'
+I, [2016-08-01T09:05:11.019881 #8260]  INFO -- : Initializing router
+I, [2016-08-01T09:05:11.023880 #8260]  INFO -- : Adding Clock to PluginList
+I, [2016-08-01T09:05:11.024891 #8260]  INFO -- : Adding Pushover to PluginList
+I, [2016-08-01T09:05:11.025880 #8260]  INFO -- : Adding Fas_Logger to PluginList
+I, [2016-08-01T09:05:11.025880 #8260]  INFO -- : PluginList: ["Clock", "Pushover", "Fas_Logger"]
+I, [2016-08-01T09:05:11.027882 #8260]  INFO -- : 
+Plugins:
+I, [2016-08-01T09:05:11.027882 #8260]  INFO -- : PluginConfig: {"server_ip"=>"127.0.0.1", "server_port"=>20000, "server_role"=>"master", "site_config"=>"etc/testsite.yaml", "logfile"=>"./server.log", "plugins"=>{"Clock"=>{"active"=>true}, "Pushover"=>{"active"=>true}, "Fas_Logger"=>{"active"=>true}}}
+I, [2016-08-01T09:05:11.032886 #8260]  INFO -- :  Will load Clock
+I, [2016-08-01T09:05:11.033902 #8260]  INFO -- :  Pluginpath: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Clock.rb
+I, [2016-08-01T09:05:11.034888 #8260]  INFO -- :   PluginConfig: {}
+I, [2016-08-01T09:05:11.035888 #8260]  INFO -- : Going to load plugin...
+I, [2016-08-01T09:05:11.038890 #8260]  INFO -- :   Loading Plugin: Clock
+I, [2016-08-01T09:05:11.039890 #8260]  INFO -- :   Extended Object
+I, [2016-08-01T09:05:11.040892 #8260]  INFO -- :   Initialized Plugin
+I, [2016-08-01T09:05:11.040892 #8260]  INFO -- :   Path: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Clock.rb
+I, [2016-08-01T09:05:11.042893 #8260]  INFO -- :   Name: Clock
+I, [2016-08-01T09:05:11.042893 #8260]  INFO -- :   File: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Clock.rb
+I, [2016-08-01T09:05:11.043893 #8260]  INFO -- :   Comment: Clock
+I, [2016-08-01T09:05:11.044894 #8260]  INFO -- :  Will load Pushover
+I, [2016-08-01T09:05:11.045895 #8260]  INFO -- :  Pluginpath: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Pushover.rb
+I, [2016-08-01T09:05:11.046896 #8260]  INFO -- :   PluginConfig: {}
+I, [2016-08-01T09:05:11.047897 #8260]  INFO -- : Going to load plugin...
+I, [2016-08-01T09:05:11.125956 #8260]  INFO -- :   Loading Plugin: Pushover
+I, [2016-08-01T09:05:11.126957 #8260]  INFO -- :   Extended Object
+I, [2016-08-01T09:05:11.126957 #8260]  INFO -- :   Initialized Plugin
+I, [2016-08-01T09:05:11.127957 #8260]  INFO -- :   Path: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Pushover.rb
+I, [2016-08-01T09:05:11.129959 #8260]  INFO -- :   Name: Pushover
+I, [2016-08-01T09:05:11.129959 #8260]  INFO -- :   File: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Pushover.rb
+I, [2016-08-01T09:05:11.131960 #8260]  INFO -- :   Comment: send Pushover notification
+I, [2016-08-01T09:05:11.132961 #8260]  INFO -- :   Actions: {"notify"=>#<Method: Plugin(Pushover)#notify>}
+I, [2016-08-01T09:05:11.133962 #8260]  INFO -- : Added Signal 'notify' routed to '#<Method: Plugin(Pushover)#notify>'
+I, [2016-08-01T09:05:11.135963 #8260]  INFO -- :  Will load Fas_Logger
+I, [2016-08-01T09:05:11.136964 #8260]  INFO -- :  Pluginpath: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Fas_Logger.rb
+I, [2016-08-01T09:05:11.137964 #8260]  INFO -- :   PluginConfig: {}
+I, [2016-08-01T09:05:11.138965 #8260]  INFO -- : Going to load plugin...
+I, [2016-08-01T09:05:11.141967 #8260]  INFO -- :   Loading Plugin: Fas_Logger
+I, [2016-08-01T09:05:11.142968 #8260]  INFO -- :   Extended Object
+I, [2016-08-01T09:05:11.143969 #8260]  INFO -- :   Initialized Plugin
+I, [2016-08-01T09:05:11.144970 #8260]  INFO -- :   Path: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Fas_Logger.rb
+I, [2016-08-01T09:05:11.146971 #8260]  INFO -- :   Name: Fas_Logger
+I, [2016-08-01T09:05:11.146971 #8260]  INFO -- :   File: C:/Users/cdriediger/Documents/GitHub/fas/plugins/Fas_Logger.rb
+I, [2016-08-01T09:05:11.148972 #8260]  INFO -- :   Comment: Plugins loggs payloads routed to it
+I, [2016-08-01T09:05:11.149973 #8260]  INFO -- : Adding ActionList: log_at_group1
+  Actions: ["Fas_Logger.info@group1"]
+I, [2016-08-01T09:05:11.150974 #8260]  INFO -- :   Adding remote Action: Pluginname: Fas_Logger, Plugin Method Name: info, Client_ID: group1
+I, [2016-08-01T09:05:11.152975 #8260]  INFO -- : Adding RemoteAction: Fas_Logger.info on group1 with arguments 
+I, [2016-08-01T09:05:11.154977 #8260]  INFO -- : Added Signal 'log_at_group1' routed to '#<Actionlist:0x000000033f6170>'
+I, [2016-08-01T09:05:11.155978 #8260]  INFO -- : Adding ActionList: notify
+  Actions: ["Pushover.notify@client1"]
+I, [2016-08-01T09:05:11.157979 #8260]  INFO -- :   Adding remote Action: Pluginname: Pushover, Plugin Method Name: notify, Client_ID: client1
+I, [2016-08-01T09:05:11.159482 #8260]  INFO -- : Adding RemoteAction: Pushover.notify on client1 with arguments 
+E, [2016-08-01T09:05:11.160983 #8260] ERROR -- : Signal already exists
+I, [2016-08-01T09:05:11.161483 #8260]  INFO -- : Adding inputs
+I, [2016-08-01T09:05:11.161984 #8260]  INFO -- :   Routing input: Clock.time_now@client1 to action: notify
+I, [2016-08-01T09:05:11.163484 #8260]  INFO -- : Added Signal 'Clock.time_now@client1' routed to '#<Method: Plugin(Pushover)#notify>'
+I, [2016-08-01T09:05:14.165489 #8260]  INFO -- : Exiting FasServer
+I, [2016-08-01T09:05:14.167508 #8260]  INFO -- : terminate reciver

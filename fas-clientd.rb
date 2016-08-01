@@ -2,13 +2,14 @@
 
 require 'dante'
 require 'yaml'
-require './fas-client.rb'
+require './lib/fas-client.rb'
+
+$client_config_path = File.absolute_path("./etc/config_client.yaml")
 
 def start
   ARGV[0] = "-d"
-  configfilepath = File.absolute_path("./config_client.yaml")
-  if File.exist?(configfilepath)
-    config = YAML.load_file(configfilepath)
+  if File.exist?($client_config_path)
+    config = YAML.load_file($client_config_path)
     if config.has_key?('logfile')
       ARGV[1] = "-l"
       ARGV[2] = config['logfile']

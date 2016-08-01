@@ -3,9 +3,9 @@
 require 'dante'
 require 'yaml'
 #require 'json'
-require './fas-server.rb'
+require './lib/fas-server.rb'
 
-$server_config_path = File.absolute_path("./config_server.yaml")
+$server_config_path = File.absolute_path("./etc/config_server.yaml")
 $server_config = YAML.load_file($server_config_path)
 $server_role = $server_config['server_role']
 
@@ -53,7 +53,7 @@ end
 def run_server
   puts("ServerName: FasServerd_#$server_role")
   Dante.run('FasServerd' + $server_role) do
-    fas_server = FasServer.new(File.absolute_path("./config_server.yaml"))
+    fas_server = FasServer.new($server_config_path)
     fas_server.run
   end
 end
@@ -88,6 +88,6 @@ elsif ARGV[0] == 'restart'
   start
   run_server
 elsif ARGV[0] == 'run'
-  fas_server = FasServer.new(File.absolute_path("./config_server.yaml"))
+  fas_server = FasServer.new($server_config_path)
   fas_server.run
 end
