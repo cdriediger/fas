@@ -2,10 +2,9 @@ require "net/https"
 
 module URI
 
-  def ssl?
+  def https?
     return true if @scheme == 'https'
-    return false if @scheme == 'http'
-    return nil
+    return false
   end
   
 end
@@ -24,7 +23,6 @@ module Pushover
     $Log.error("No User found in Pushover config") unless @config.has_key?('user')
     if @config.has_key?('url')
       url = URI.parse(@config['url']
-      use_ssl = url.ssl?
     else
       if @config.has_key?('use_ssl')
         url = URI.parse("https://api.pushover.net/1/messages.json")
@@ -39,7 +37,7 @@ module Pushover
       :message => data,
 	})
     res = Net::HTTP.new(url.host, url.port)
-    res.use_ssl = false
+    res.use_ssl = url.ssl?
     res.verify_mode = OpenSSL::SSL::VERIFY_PEER
     res.start {|http| http.request(req) }
   end
