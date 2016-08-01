@@ -28,8 +28,8 @@ class Connection
   def connect(reconnect=false)
     loop do
       $Log.info("Connecting to Server #{@server_ip}:#{@server_port}")
-      @server = Transmiter.new(@server_ip, @server_port, @local_ip)
-      success = @server.connect
+      @transmitter = Transmiter.new(@server_ip, @server_port, @local_ip)
+      success = @transmitter.connect
       if success
         $Log.info("Connected")
         #@server_offline_scheduler.in '20s' do
@@ -39,7 +39,7 @@ class Connection
           @restart_method.call
         else
           @router = Router.new($routingtable)
-          @reciver = ClientReciver.new(@router, @server.socket)
+          @reciver = ClientReciver.new(@router, @transmitter.socket)
           @reciver.run
           send('register', @local_ip)
           send('ping reply', @local_ip.to_s)
@@ -60,7 +60,7 @@ class Connection
     @connected = false
     $plugins.pause if $plugins
     @server_offline_scheduler.jobs[0].unschedule unless @server_offline_scheduler.jobs.empty?
-    @server.close
+    @transmitter.close
     $Log.info("closed server")
   end
 
@@ -71,6 +71,6 @@ class Connection
 
   def send(signal, data)
     $Log.info("Sending #{signal} Data: #{data}")
-    server_offline unless @server.send($id, signal, data)
+    server_offline unless @transmitter.send($id, signal, data)
   end
 end
