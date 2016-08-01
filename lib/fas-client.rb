@@ -100,8 +100,8 @@ class FasClient
   # Apply config send from server
   def parse_config(ip, config)
     $Log.info("Parsing Config:")
-    $Log.info("  ID: #{config['id']}"
-    $Log.info("  Plugins: #{config['plugins']}"
+    $Log.info("  ID: #{config['id']}")
+    $Log.info("  Plugins: #{config['plugins']}")
     $Log.info("  Signals: #{config['remote_signals']}")
     
     # Set global client id

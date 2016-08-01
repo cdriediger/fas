@@ -5,10 +5,10 @@ require 'yaml'
 require './lib/fas-server.rb'
 
 $server_config_path = File.absolute_path("./etc/config_server.yaml")
-if File.exist?($client_config_path)
+if File.exist?($server_config_path)
   $server_config = YAML.load_file($server_config_path)
 else
-  puts "Client config not found at: #{$client_config_path}"
+  puts "Client config not found at: #{$server_config_path}"
   Kernel.exit!
 end
 

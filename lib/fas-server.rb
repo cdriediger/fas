@@ -34,6 +34,7 @@ class FasServer
       $Log.fatal_error("Could not find Config at: #{@config_path}")
     else
       @config = YAML.load_file(@config_path)
+      $Log.info(@config)
       $Log.info("Loading client config from: #{@config_path}")
     end
     
@@ -42,7 +43,7 @@ class FasServer
     if not File.exists?(@site_config_path)
       $Log.fatal_error("Could not find Config at: #{@site_config_path}")
     else
-      @config = YAML.load_file(@site_config_path)
+      @site_config = YAML.load_file(@site_config_path)
       $Log.info("Loading site config from: #{@site_config_path}")
     end
     
