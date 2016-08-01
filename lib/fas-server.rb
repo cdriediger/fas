@@ -9,7 +9,6 @@ require './lib/server_reciver.rb'
 require './lib/router.rb'
 require './lib/server_clients.rb'
 require './lib/plugins.rb'
-require './lib/server_slaves.rb'
 require './lib/fas-protocol.rb'
 require './lib/logger.rb'
 
@@ -42,18 +41,14 @@ class FasServer
     @routingtable = RoutingTable.new(@site_config)
     @clients = Clients.new(@site_config)
     @routingtable.set_clients(@clients)
-    @slaves = Slaves.new
     @routingtable.add_signals({'register'=>@clients.method(:register),
                                'ping reply'=>@clients.method(:input_ping_reply),
-                               'become master'=>method(:become_master),
                                'client offline'=>@clients.method(:set_offline),
                                'require plugin'=>@clients.method(:send_plugin)})
-    @routingtable.add_relay_signal('register')
-    
     puts '--------------'
     @routingtable.each_pair {|signal, action| puts "#{signal} -> #{action}"}
     puts '--------------'
-    @router = Router.new(@routingtable, @clients, @slaves)
+    @router = Router.new(@routingtable, @clients)
     @loopback = Loopback.new(@router)
   end
 
@@ -72,19 +67,6 @@ class FasServer
     $Log.info("Exiting FasServer")
     @clients.server_offline
     @reciver.close
-  end
-
-  def become_master(id, data)
-    puts("!! Becoming master !!")
-    puts "|#{id}|#{data}|"
-    begin
-      kill_socket = TCPSocket.new(@master_server_ip, @master_server_port.to_i + 1)
-      kill_socket.puts(JSON.generate([@config['shared_secret'], 'stonith']))
-      kill_socket.close
-    rescue Errno::ECONNREFUSED => e
-      puts("Can not connect STONITH Daemon\nError: #{e}")
-    end
-    $server_role = 'master'
   end
 
 end

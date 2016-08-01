@@ -1,10 +1,9 @@
 class Router
 
-  def initialize(routingtable, clients=nil, slaves=nil)
+  def initialize(routingtable, clients=nil)
     $Log.info("Initializing router")
     @routingtable = routingtable
     @clients = clients
-    @slaves = slaves
   end
 
   def route(clientaddr, data, socket=nil)
@@ -93,12 +92,6 @@ class Router
     return nil
   end
 
-  def relay(clientaddr, data)
-    signal = data['signal']
-    payload = data['payload']
-    @slaves.relay(signal, payload, "0") if @routingtable.relay_signals.include?(signal)
-  end
-
   def test_payload_type(payload)
     return true if payload.kind_of?(String)
     return true if payload.kind_of?(TrueClass)
@@ -108,7 +101,6 @@ class Router
 
   def parse_id(source_id, clientaddr)
     return @clients.by_ip(clientaddr).id if @clients.by_ip(clientaddr) if @clients
-    return clientaddr if @slaves.has_key?(clientaddr) if @slaves
     return "0"
   end
 
@@ -172,7 +164,6 @@ class RoutingTable < Hash
   def initialize(site_config=nil)
     @site_config = site_config
     @clients = nil
-    @relay_signals = []
   end
 
   def set_clients(clients)
@@ -192,10 +183,6 @@ class RoutingTable < Hash
       $Log.info("Added Signal '#{signal}' routed to '#{action}'")
       self[signal] = action
     end
-  end
-
-  def add_relay_signal(signal)
-    @relay_signals << signal
   end
 
   def add_config_actionlists
@@ -250,7 +237,5 @@ class RoutingTable < Hash
       $Log.error("No such Signal")
     end
   end
-
-  attr_reader :relay_signals
 
 end

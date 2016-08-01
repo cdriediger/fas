@@ -21,7 +21,6 @@ class ServerReciver
           data = FasProtocol.decode(recived_data)
           if data
             @router.route(clientaddr, data, socket)
-            @router.relay(clientaddr, data)
           end
         end
         socket.close
