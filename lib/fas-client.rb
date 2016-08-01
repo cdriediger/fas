@@ -110,8 +110,3 @@ class FasClient
     $connection.close if $connection.connected?
   end
 end
-
-if not ARGV.empty? and ARGV[0] == 'run'
-  fas_client = FasClient.new(File.absolute_path("./etc/config_client.yaml"))
-  fas_client.run
-end
