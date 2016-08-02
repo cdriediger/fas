@@ -7,9 +7,9 @@ class Log
     logfiles.map! {|path| /\d{1,3}/.match(path).to_s.to_i}
     logfiles.map! {|number| number.to_i}
     if logfiles.empty?
-      @Logfile = path + ".debug.1"
+      @Logfile = path + ".1.debug"
     else
-      @Logfile = path + ".debug." + (logfiles.sort[-1] + 1).to_s
+      @Logfile = path + (logfiles.sort[-1] + 1).to_s  + ".debug."
     end
     puts "Logfile: #{@Logfile}"
     @logger = Logger.new(@Logfile)
