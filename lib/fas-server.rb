@@ -1,6 +1,6 @@
 #! /usr/bin/ruby
 
-#Global require
+# Global require
 require 'json'
 require 'socket'
 require 'timeout'

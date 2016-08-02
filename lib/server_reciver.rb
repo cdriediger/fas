@@ -8,13 +8,13 @@ class ServerReciver
   end
 
   def run
-    @server = TCPServer.new(@ip, @port)
+    @socket = TCPServer.new(@ip, @port)
     @reciver = Thread.new { reciver }
   end
 
   def reciver
     loop do
-      Thread.start(@server.accept) do |socket|
+      Thread.start(@socket.accept) do |socket|
         clientaddr = socket.peeraddr[3]
         $Log.info("New Connection from #{clientaddr}")
         while recived_data = socket.gets
@@ -36,7 +36,7 @@ class ServerReciver
     rescue IOError
 
     end
-    @server.close
+    @socket.close
   end
 
 end

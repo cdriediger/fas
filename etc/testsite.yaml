@@ -33,7 +33,7 @@ clients:
       Pushover:
         active: true
         config:
-          use_ssl: false
+          use_ssl: true
           token: 'anbjhwch9nzdnhpkvt3hg3vt36xtwp'
           user: 'uGF8ao5xrXhdCdBph9vJCrZpp5zJHe'
 
