@@ -264,11 +264,11 @@ class Client
     end
     $Log.info("Sending Plugin #{filepath} to #{@ip}")
     plugindata_base64 = Base64.encode64(IO.read(filepath))
-    if @plugins[pluginname].has_key?('config')
-      pluginconfig = @plugins[pluginname]['config']
-    else
-      pluginconfig = {}
-    end
+    #if @plugins[pluginname].has_key?('config')
+    #  pluginconfig = @plugins[pluginname]['config']
+    #else
+    #  pluginconfig = {}
+    #end
     send('plugin data', [pluginname, pluginconfig, plugindata_base64])
     $Log.info("Plugin send")
   end
