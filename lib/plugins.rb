@@ -2,34 +2,27 @@ class Plugins < Hash
 
   def initialize(routingtable, config, loopback=nil)
     @routingtable = routingtable
+    @config = config
     @loopback = loopback
     @pluginlist = []
-    if config.has_key?('plugins')
-      pluginsconfig = config['plugins']
-      pluginsconfig.each_key do |pluginname|
-        $Log.info("Adding #{pluginname} to PluginList")
-        @pluginlist << pluginname
+    if $role == "server"
+      Dir["plugins/*"].each do |filepath| 
+        @pluginlist << File.basename(filepath)
+      end
+    else
+      if @config.has_key?('plugins')
+        @pluginsconfig = @config['plugins']
+        @pluginsconfig.each_key do |pluginname|
+          $Log.info("Adding #{pluginname} to PluginList")
+          @pluginlist << pluginname
+        end
       end
     end
     $Log.info("PluginList: #{@pluginlist}")
-    @scheduler = Rufus::Scheduler.new
     if $role == "client"
-      @routingtable.add_signal('plugin data', self.method(:recive_plugin))
-    end
-    $Log.info("\nPlugins:")
-    $Log.info("PluginConfig: #{config}")
-    @pluginlist.each do |pluginname|
-      pluginconfig = {}
-      if pluginsconfig.has_key?(pluginname)
-        if pluginsconfig[pluginname].has_key?('config')
-          pluginconfig = pluginsconfig[pluginname]['config']
-        end
-        if pluginsconfig[pluginname].has_key?('active')
-          if pluginsconfig[pluginname]['active']
-            load_plugin(pluginname, pluginconfig)
-          end
-        end
-      end
+      load_plugins
+    else
+      load_plugin_dummys
     end
     $plugins_loaded = true
   end
@@ -40,6 +33,38 @@ class Plugins < Hash
     $Log.info("pausing plugin scheduler")
     @scheduler.pause
   end
+
+  def load_plugins
+    @scheduler = Rufus::Scheduler.new
+    @routingtable.add_signal('plugin data', self.method(:recive_plugin))
+    $Log.info("\nPlugins:")
+    @pluginlist.each do |pluginname|
+      pluginconfig = {}
+      if @pluginsconfig.has_key?(pluginname)
+        if @pluginsconfig[pluginname].has_key?('config')
+          pluginconfig = @pluginsconfig[pluginname]['config']
+        end
+        if @pluginsconfig[pluginname].has_key?('active')
+          if @pluginsconfig[pluginname]['active']
+            load_plugin(pluginname, pluginconfig)
+          end
+        end
+      end
+    end
+  end
+
+  def load_plugin_dummys
+    $Log.info("\nPlugins:")
+    @pluginlist.each do |pluginname|
+      $Log.info(" Will load #{pluginname}")
+      pluginpath = File.absolute_path("./plugins/" + pluginname + ".rb")
+      if File.exists?(pluginpath)
+        $Log.info("Going to load plugin...")
+        self[pluginname] = PluginDummy.new(pluginname, {}, @scheduler, @loopback)
+      end
+    end
+  end
+
 
   def load_plugin(pluginname, config={})
     $Log.info(" Will load #{pluginname}")
@@ -82,7 +107,7 @@ class Plugins < Hash
   end
 end
 
-class Plugin
+class PluginDummy
 
   def initialize(pluginname, config, scheduler, loopback)
     @pluginname = pluginname
@@ -90,11 +115,20 @@ class Plugin
     @scheduler = scheduler
     @loopback = loopback
     $Log.info("  Loading Plugin: #{pluginname}")
+    @file = File.absolute_path("./plugins/" + pluginname + ".rb")
+  end
+
+  attr_accessor :name
+  attr_accessor :file
+end
+
+class Plugin < PluginDummy
+
+  def initialize(pluginname, config, scheduler, loopback)
+    super(pluginname, config, scheduler, loopback)
     extend Object.const_get(pluginname)
     $Log.info("  Extended Object")
     init_plugin($role)
-    $Log.info("  Initialized Plugin")
-    @file = File.absolute_path("./plugins/" + pluginname + ".rb")
     $Log.info("  Path: " + @file)
     $Log.info("  Name: #{@name}")
     $Log.info("  File: #{@file}")
@@ -106,8 +140,6 @@ class Plugin
     $connection.send(signal, data)
   end
 
-  attr_accessor :name
-  attr_accessor :file
   attr_accessor :comment
   attr_reader :signals
 end
