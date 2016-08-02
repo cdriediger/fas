@@ -34,7 +34,7 @@ class Clients < Hash
         end
       end
     end
-#    @ping_thread = Thread.new{self.check_online}
+    @ping_thread = Thread.new{self.check_online}
   end
 
   def close()
@@ -127,7 +127,7 @@ class Clients < Hash
   end
 
   def ping(client)
-    id = get_ping_id
+    id = SecureRandom.uuid()
     $Log.info("Sending Ping Request #{id} to #{client.ip.to_s} #{client}")
     client.send_ping(id)
     4.times do
@@ -139,21 +139,6 @@ class Clients < Hash
     end
     client.set_offline
     return false
-  end
-
-  def get_ping_id
-    if @pingids.length < 5
-      last_id = @pingids[-1]
-      if last_id > 99999
-        last_id = 0
-      end
-      5.times do |i|
-        @pingids << last_id + i
-      end
-    end
-    id = @pingids.first
-    @pingids.delete_at(0)
-    return id
   end
 
 end

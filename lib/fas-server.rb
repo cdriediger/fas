@@ -13,6 +13,7 @@ require './lib/fas-protocol.rb'
 require './lib/logger.rb'
 
 #Server require
+require 'securerandom'
 require './lib/server_clients.rb'
 
 
