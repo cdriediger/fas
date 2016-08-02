@@ -132,6 +132,7 @@ class Clients < Hash
     client.send_ping(id)
     4.times do
       if client.ping_reply_queue.include?(id)
+        client.ping_reply_queue.delete(id)
         return true
       end
       sleep(1)
