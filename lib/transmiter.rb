@@ -1,9 +1,8 @@
 class Transmiter
 
-  def initialize(dest_ip, dest_port, src_ip)
+  def initialize(dest_ip, dest_port)
     @ip = dest_ip
     @port = dest_port
-    @src_ip = src_ip
     @connected = false
     @slave_send = false
   end
@@ -20,7 +19,7 @@ class Transmiter
 
   def connect
     begin
-      @socket = TCPSocket.new(@ip, @port, local_host=@src_ip)
+      @socket = TCPSocket.new(@ip, @port)
     rescue Errno::ECONNREFUSED => e
       $Log.error("Connecting to #{@ip}:#{@port} failed:\n  Error: #{e}")
       return false

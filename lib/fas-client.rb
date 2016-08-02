@@ -37,10 +37,14 @@ class FasClient
       @config = YAML.load_file(@config_path)
       $Log.info("Loading client config from: #{@config_path}")
     end
-    
-    # Introduce global id variable. Gets filled by server later. Id get transmitted to server to identify the client  
-    $id = nil
-    
+          
+    # get client id from config
+    unless @config.has_key?('name')
+      $Log.fatal_error("No name found in #{@config_path}!!")
+    end
+    $id = @config['name']
+    $Log.info("Going to use name: #{$id}")
+
     # get IP-Adress to connect to
     unless @config.has_key?('server_ip')
       $Log.fatal_error("No server_ip found in #{@config_path}!!")
@@ -56,21 +60,9 @@ class FasClient
       $Log.info("No 'server_port' found in #{@config_path}")
     end
     $Log.info("Going to listen to server port: #{$server_port}")
-    
-    # get local IP config. IP-Address and Port is used by server to identify the client an registration. Needs to be changed!
-    if @config.has_key?('local_ip')
-      $local_ip = @config['local_ip']
-    else
-      $Log.fatal_error("'local_ip' missing in config")
-    end
-    if @config.has_key?('local_port')
-      $local_port = @config['local_port']
-    else
-      $local_port = "20001"
-    end
-     
+         
     # Setup connection to server
-    $connection = Connection.new($server_ip, $server_port, $local_ip, method(:restart))
+    $connection = Connection.new($server_ip, $server_port, method(:restart))
     
     # Setup routingtable 
     $routingtable = RoutingTable.new
@@ -103,10 +95,7 @@ class FasClient
     $Log.info("  ID: #{config['id']}")
     $Log.info("  Plugins: #{config['plugins']}")
     $Log.info("  Signals: #{config['remote_signals']}")
-    
-    # Set global client id
-    $id = config['id']
-    
+        
     # Setup Plugins (just load plugins specified by server) 
     $plugins = Plugins.new($routingtable, config)
     

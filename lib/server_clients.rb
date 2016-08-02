@@ -44,9 +44,9 @@ class Clients < Hash
     end
   end
 
-  def register(source_port, ip, socket)
-    $Log.info("Register #{ip}")
-    client = self.by_ip(ip)
+  def register(source_port, id, socket)
+    $Log.info("Register client: #{id}")
+    client = self[id]
     if client
       if client.online?
         $Log.error("Online client trys to register again. Setting client offline")
@@ -55,21 +55,21 @@ class Clients < Hash
       client.set_online(socket)
       client.push_config
     else
-      $Log.error("No such client #{ip}")
+      $Log.error("No such client #{id}")
     end
   end
 
-  def set_offline(senderip, ip)
-    client = self.by_ip(ip)
+  def set_offline(senderip, id)
+    client = self[id]
     if client
       if client.online?
         client.set_offline
         $Log.info("client #{client.id} logged out")
       else
-        $Log.error("Cannot loggout client #{ip}. Client is offline")
+        $Log.error("Cannot loggout client: #{id}. Client is offline")
       end
     else
-      $Log.error("No such client #{ip}")
+      $Log.error("No such client: #{id}")
     end
   end
 

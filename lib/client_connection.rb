@@ -1,9 +1,8 @@
 class Connection
 
-  def initialize(server_ip, server_port, local_ip, restart_method)
+  def initialize(server_ip, server_port, restart_method)
     @server_ip = server_ip
     @server_port = server_port
-    @local_ip = local_ip
     @restart_method = restart_method
     @connected = false
   end
@@ -27,7 +26,7 @@ class Connection
   def connect(reconnect=false)
     loop do
       $Log.info("Connecting to Server #{@server_ip}:#{@server_port}")
-      @transmitter = Transmiter.new(@server_ip, @server_port, @local_ip)
+      @transmitter = Transmiter.new(@server_ip, @server_port)
       success = @transmitter.connect
       if success
         $Log.info("Connected")
@@ -37,8 +36,8 @@ class Connection
           @router = Router.new($routingtable)
           @reciver = ClientReciver.new(@router, @transmitter.socket)
           @reciver.run
-          send('register', @local_ip)
-          send('ping reply', @local_ip.to_s)
+          send('register', $id)
+          send('ping reply', $id)
           @connected = true
           break
         end
@@ -51,7 +50,7 @@ class Connection
     $Log.info("Closing server")
     if connected? and not server_offline
       $Log.info("sending client offline")
-      self.send('client offline', @local_ip)
+      self.send('client offline', $id)
     end
     @connected = false
     $plugins.pause if $plugins

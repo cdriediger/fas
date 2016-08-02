@@ -1,5 +1,4 @@
+name: client1
 server_ip: 127.0.0.1
 server_port: 20000
-local_ip: 127.0.0.1
-local_port: 20001
 logfile: "./client.log"
