@@ -28,12 +28,12 @@ class Log
 
   def info(msg)
     @logger.info(msg)
-    puts(msg)
+    puts("INFO: " + msg.to_s)
   end
 
   def error(msg)
     @logger.error(msg)
-    puts(msg)
+    puts("ERROR: " + msg.to_s)
   end
 
   def fatal_error(msg)
