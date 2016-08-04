@@ -39,7 +39,7 @@ clients:
 
 
 inputs:
-  Clock.time_now@client1: notify_via_pushover
+  Clock.time_now@client1: Fas_Logger.info@client1
 
 actions:
   log_at_group1:

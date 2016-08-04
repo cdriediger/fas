@@ -192,23 +192,21 @@ class RoutingTable < Hash
       actionlist =  Actionlist.new(name)
       #actions = [actions] if actions.kind_of??(String)
       content.each_pair do |action, arguments|
-        actionname, dest_client_id = action.split('@')
-        pluginname, pluginmethodname = actionname.split('.')
-        $Log.info("  Adding remote Action: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}, Client_ID: #{dest_client_id}")
-        unless dest_client_id
-          $Log.error("  Local Actions are not supported: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}")
-          next
-        end
-        unless @clients.has_key?(dest_client_id)
-          $Log.error("Error on Config. No such client: #{dest_client_id}")
-        end
-        actionlist.add_action(create_remote_action(actionname, arguments, dest_client_id))
+        remote_action = create_remote_action(action, arguments)
+        actionlist.add_action(remote_action) if remote_action
       end
       add_signal(name, actionlist)
     end
   end
 
-  def create_remote_action(actionname, arguments, dest_client_id)
+  def create_remote_action(action, arguments)
+    actionname, dest_client_id = action.split('@')
+    pluginname, pluginmethodname = actionname.split('.')
+    $Log.info("  Adding remote Action: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}, Client_ID: #{dest_client_id}")
+    unless dest_client_id
+      $Log.error("  Local Actions are not supported: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}")
+      return nil
+    end
     if @clients.has_key?(dest_client_id)
       client = @clients[dest_client_id]
       remote_action = RemoteAction.new(client, actionname, arguments)
@@ -225,7 +223,7 @@ class RoutingTable < Hash
       if self.has_key?(action)
         add_signal(name, self[action])
       else
-        $Log.error("Error on Config. No such action defined: #{action}")
+        add_signal(name, create_remote_action(action, {}))
       end
     end
   end
