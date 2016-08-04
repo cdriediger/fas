@@ -5,7 +5,7 @@ module Email
   def init_plugin(mode)
     @name = "Email"
     @comment = "Send and Recive Emails"
-	@signals = {'send_email'=>self.method(:send_email)}
+    @signals = {'send_email'=>self.method(:send_email)}
     @jobs = []
   end
 

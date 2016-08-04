@@ -36,8 +36,8 @@ class Connection
           @router = Router.new($routingtable)
           @reciver = ClientReciver.new(@router, @transmitter.socket)
           @reciver.run
-          send('register', $id)
-          send('ping reply', $id)
+          send(:register, $id)
+          send(:ping_reply, $id)
           @connected = true
           break
         end
@@ -50,7 +50,7 @@ class Connection
     $Log.info("Closing server")
     if connected? and not server_offline
       $Log.info("sending client offline")
-      self.send('client offline', $id)
+      self.send(:client_offline, $id)
     end
     @connected = false
     $plugins.pause if $plugins
@@ -60,11 +60,12 @@ class Connection
 
   def send_testsignal
     puts("Sending Signal")
-    self.send('testsignal', true)
+    self.send(:testsignal, true)
   end
 
   def send(signal, data)
     $Log.info("Sending #{signal} Data: #{data}")
+    signal = signal.to_s if signal.is_a?(Symbol)
     server_offline unless @transmitter.send($id, signal, data)
   end
 end

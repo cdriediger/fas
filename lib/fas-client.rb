@@ -25,7 +25,7 @@ class FasClient
     $Log.level = Logger::DEBUG
     $Log.info('Start FasClient')
     # Set role (server|client)
-    $role = "client"
+    $role = :client
     # Show Exception risen in Threads
     Thread.abort_on_exception=true
     
@@ -67,10 +67,10 @@ class FasClient
     # Setup routingtable 
     $routingtable = RoutingTable.new
     # Adding default routes
-    $routingtable.add_signals({'ping request' => self.method(:ping_replay), 
-                               'client config' => self.method(:parse_config),
-                               'server going offline' => $connection.method(:server_offline),
-                               'restart' => self.method(:restart)})
+    $routingtable.add_signals({:ping_request => self.method(:ping_replay), 
+                               :client_config => self.method(:parse_config),
+                               :server_going_offline => $connection.method(:server_offline),
+                               :restart => self.method(:restart)})
                                
     # Array in which plugins stored there repeating jobs. Its obsolete an need to be removed
     # such jobs are now handeld by scheduler in Plugins class  
@@ -86,7 +86,7 @@ class FasClient
   # Send ping peply to server. Needs to be transferd to Connection Class
   def ping_replay(ip, id)
     $Log.info("Got Ping request #{id}")
-    $connection.send('ping reply', id)
+    $connection.send(:ping_reply, id)
   end
 
   # Apply config send from server

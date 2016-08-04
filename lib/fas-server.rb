@@ -25,7 +25,7 @@ class FasServer
     $Log.level = Logger::DEBUG
     $Log.info('Start FasServer')
     # Set role (server|client)
-    $role = "server"
+    $role = :server
     # Show Exception risen in Threads
     Thread.abort_on_exception=true
     
@@ -71,10 +71,10 @@ class FasServer
     @routingtable = RoutingTable.new(@site_config, @clients)
         
     # Adding default routes
-    @routingtable.add_signals({'register'=>@clients.method(:register),
-                               'ping reply'=>@clients.method(:input_ping_reply),
-                               'client offline'=>@clients.method(:set_offline),
-                               'require plugin'=>@clients.method(:send_plugin)})
+    @routingtable.add_signals({:register=>@clients.method(:register),
+                               :ping_reply=>@clients.method(:input_ping_reply),
+                               :client_offline=>@clients.method(:set_offline),
+                               :require_plugin=>@clients.method(:send_plugin)})
        
     # Setup Router. Rout data by signal to the correct function 
     @router = Router.new(@routingtable, @clients)
@@ -93,7 +93,14 @@ class FasServer
 
     # Debugoutput out routingtable
     puts '--------------'
-    @routingtable.each_pair {|signal, action| $Log.info("#{signal} -> #{action}")}
+    @routingtable.each_pair do |signal, action|
+      if action.is_a?(RemoteAction)
+        $Log.info("#{signal.to_s} -> #{action} on #{action.client}")
+        $Log.info("-> GroupMembers: #{action.client.clients}") if action.client.is_a?(ClientGroup)
+      else
+        $Log.info("#{signal.to_s} -> #{action}")
+      end
+    end
     puts '--------------'
   end
 

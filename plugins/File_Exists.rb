@@ -3,7 +3,7 @@ module File_Exists
     def init_plugin(mode)
         @name = "File_Exists"  #Change Me
         @comment = "Plugins notifys if File Exists"  #Change me to
-        if mode == "client"
+        if mode == :client
             @filepath = @config['file_path']
             @exists = File.exists?(@filepath)
             @scheduler.every @config['search_every'] do
@@ -27,10 +27,10 @@ module File_Exists
     def search_for_file
         puts("Searching file #{@filepath}")
         if File.exists?(@filepath) and not @exists
-            send('file_exists', @filepath)
+            send(:file_exists, @filepath)
             @exists = true
         elsif not File.exists?(@filepath) and @exists
-            send('file_not_exists', @filepath)
+            send(:file_not_exists, @filepath)
             @exists = false
         end
     end

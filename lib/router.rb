@@ -65,7 +65,7 @@ class Router
         end
       end
     rescue NoMethodError => e
-      $Log.error("Couldn't call signal: #{selected_signal}. Error: #{e}")
+      $Log.error("Couldn't call signal: '#{selected_signal}' Class: '#{selected_signal.class}'. Error: #{e}")
     end
   end
 
@@ -149,6 +149,8 @@ class RemoteAction
     end
   end
 
+  attr_reader :client
+
 end
 
 class RoutingTable < Hash
@@ -165,6 +167,7 @@ class RoutingTable < Hash
   end
 
   def add_signal(signal, action)
+    signal = signal.to_s if signal.is_a?(Symbol)
     if self.has_key?(signal)
       $Log.error("Signal already exists")
     else
@@ -184,7 +187,7 @@ class RoutingTable < Hash
   def add_config_actionlists
     return unless @site_config['actions']
     @site_config['actions'].each do |name, content|
-      $Log.info("Adding ActionList: #{name}\n  Actions: #{content.keys}")
+      $Log.info("Adding ActionList: #{name}\n  -> Actions: #{content.keys}")
       actionlist =  Actionlist.new(name)
       #actions = [actions] if actions.kind_of??(String)
       content.each_pair do |action, arguments|

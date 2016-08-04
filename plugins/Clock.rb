@@ -3,7 +3,7 @@ module Clock
     def init_plugin(mode)
         @name = "Clock"  #Change Me
         @comment = "Clock"  #Change me to
-        if $role == "client"
+        if $role == :client
             if @config.has_key?('send_every')
                 @scheduler.every @config['send_every'] do
                     send_time

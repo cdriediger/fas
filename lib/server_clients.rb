@@ -182,6 +182,14 @@ class ClientGroup
     return @name
   end
 
+  def clients
+    clientname_list = []
+    @clients.each do |client|
+      clientname_list << client.id
+    end
+    return clientname_list
+  end
+
   attr_reader :name
 
 end
@@ -244,13 +252,13 @@ class Client
   end
 
   def send_ping(id)
-    send("ping request", id)
+    send(:ping_request, id)
   end
 
   def push_config()
     $Log.info('pushing config')
     config = {'id'=>@id, 'plugins'=>@plugins, 'remote_signals'=>@remote_signals}
-    send('client config', config)
+    send(:client_config, config)
   end
 
   def send_plugin(pluginname)
@@ -270,12 +278,12 @@ class Client
     #else
     #  pluginconfig = {}
     #end
-    send('plugin data', [pluginname, pluginconfig, plugindata_base64])
+    send(:plugin_data, [pluginname, pluginconfig, plugindata_base64])
     $Log.info("Plugin send")
   end
 
   def server_offline()
-    send("server going offline", $server_ip)
+    send(:server_going_offline, $server_ip)
     begin
       @socket.close
     rescue IOError
@@ -287,6 +295,7 @@ class Client
     if online?
       begin
         Timeout::timeout(2) do
+          remote_signal = remote_signal.to_s if remote_signal.is_a?(Symbol)
           packet = FasProtocol.generate(source_id, remote_signal, payload, arguments)
           @socket.puts(packet)
           $Log.info("send #{packet} to #{@ip}:#{@port}")

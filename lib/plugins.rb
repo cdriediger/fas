@@ -1,12 +1,20 @@
+class File
+
+  def self.delete_file_extention(path)
+    return path.split('.')[0...-1].join
+  end
+
+end
+
 class Plugins < Hash
 
   def initialize(routingtable, config)
     @routingtable = routingtable
     @config = config
     @pluginlist = []
-    if $role == "server"
+    if $role == :server
       Dir["plugins/*"].each do |filepath| 
-        @pluginlist << File.basename(filepath)
+        @pluginlist << File.delete_file_extention(File.basename(filepath))
       end
     else
       if @config.has_key?('plugins')
@@ -18,7 +26,7 @@ class Plugins < Hash
       end
     end
     $Log.info("PluginList: #{@pluginlist}")
-    if $role == "client"
+    if $role == :client
       load_plugins
     else
       load_plugin_dummys
@@ -35,8 +43,8 @@ class Plugins < Hash
 
   def load_plugins
     @scheduler = Rufus::Scheduler.new
-    @routingtable.add_signal('plugin data', self.method(:recive_plugin))
-    $Log.info("\nPlugins:")
+    @routingtable.add_signal(:plugin_data, self.method(:recive_plugin))
+    $Log.info("Loading Plugins:")
     @pluginlist.each do |pluginname|
       pluginconfig = {}
       if @pluginsconfig.has_key?(pluginname)
@@ -53,13 +61,15 @@ class Plugins < Hash
   end
 
   def load_plugin_dummys
-    $Log.info("\nPlugins:")
+    $Log.info("Loading plugins:")
     @pluginlist.each do |pluginname|
       $Log.info(" Will load #{pluginname}")
       pluginpath = File.absolute_path("./plugins/" + pluginname + ".rb")
       if File.exists?(pluginpath)
-        $Log.info("Going to load plugin...")
+        $Log.info("  -> Going to load plugin...")
         self[pluginname] = PluginDummy.new(pluginname, {}, @scheduler)
+      else
+        $Log.error("  -> Plugin not found at: #{pluginpath}")
       end
     end
   end
