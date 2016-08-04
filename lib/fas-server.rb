@@ -64,24 +64,18 @@ class FasServer
     end
     $Log.info("Going to listen on port: #{$server_port}")
     
-    # Setup routingtable. Handels all routes
-    @routingtable = RoutingTable.new(@site_config)
-    
     # Setup clients class. Handels management of clients an comunication with clients
     @clients = Clients.new(@site_config)
-    
-    # Pass clients to routingtable
-    @routingtable.set_clients(@clients)
-    
+
+    # Setup routingtable. Handels all routes
+    @routingtable = RoutingTable.new(@site_config, @clients)
+        
     # Adding default routes
     @routingtable.add_signals({'register'=>@clients.method(:register),
                                'ping reply'=>@clients.method(:input_ping_reply),
                                'client offline'=>@clients.method(:set_offline),
                                'require plugin'=>@clients.method(:send_plugin)})
-    puts '--------------'
-    @routingtable.each_pair {|signal, action| puts "#{signal} -> #{action}"}
-    puts '--------------'
-    
+       
     # Setup Router. Rout data by signal to the correct function 
     @router = Router.new(@routingtable, @clients)
       
@@ -96,6 +90,11 @@ class FasServer
     
     # Setup Reciver. Recives packages from clients an prepares them for routing
     @reciver = ServerReciver.new($server_ip, $server_port, @router)
+
+    # Debugoutput out routingtable
+    puts '--------------'
+    @routingtable.each_pair {|signal, action| $Log.info("#{signal} -> #{action}")}
+    puts '--------------'
   end
 
   def run
