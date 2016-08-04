@@ -1,9 +1,8 @@
 class Plugins < Hash
 
-  def initialize(routingtable, config, loopback=nil)
+  def initialize(routingtable, config)
     @routingtable = routingtable
     @config = config
-    @loopback = loopback
     @pluginlist = []
     if $role == "server"
       Dir["plugins/*"].each do |filepath| 
@@ -60,7 +59,7 @@ class Plugins < Hash
       pluginpath = File.absolute_path("./plugins/" + pluginname + ".rb")
       if File.exists?(pluginpath)
         $Log.info("Going to load plugin...")
-        self[pluginname] = PluginDummy.new(pluginname, {}, @scheduler, @loopback)
+        self[pluginname] = PluginDummy.new(pluginname, {}, @scheduler)
       end
     end
   end
@@ -78,7 +77,7 @@ class Plugins < Hash
     if File.exists?(pluginpath)
       $Log.info("Going to load plugin...")
       require pluginpath
-      plugin = Plugin.new(pluginname, config, @scheduler, @loopback)
+      plugin = Plugin.new(pluginname, config, @scheduler)
       if plugin.signals
         $Log.info("  Actions: " + plugin.signals.to_s)
         plugin.signals.each do |signal|
@@ -109,11 +108,10 @@ end
 
 class PluginDummy
 
-  def initialize(pluginname, config, scheduler, loopback)
+  def initialize(pluginname, config, scheduler)
     @pluginname = pluginname
     @config = config
     @scheduler = scheduler
-    @loopback = loopback
     $Log.info("  Loading Plugin: #{pluginname}")
     @file = File.absolute_path("./plugins/" + pluginname + ".rb")
   end
@@ -124,8 +122,8 @@ end
 
 class Plugin < PluginDummy
 
-  def initialize(pluginname, config, scheduler, loopback)
-    super(pluginname, config, scheduler, loopback)
+  def initialize(pluginname, config, scheduler)
+    super(pluginname, config, scheduler)
     extend Object.const_get(pluginname)
     $Log.info("  Extended Object")
     init_plugin($role)

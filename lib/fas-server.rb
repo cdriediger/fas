@@ -84,12 +84,9 @@ class FasServer
     
     # Setup Router. Rout data by signal to the correct function 
     @router = Router.new(@routingtable, @clients)
-    
-    # Loopback interface. Introduced with HA. Probably not usefull anymore
-    @loopback = Loopback.new(@router)
-    
+      
     # Load and configure plugins
-    @plugins = Plugins.new(@routingtable, @config, @loopback)
+    @plugins = Plugins.new(@routingtable, @config)
     
     # Create actionlists from config
     @routingtable.add_config_actionlists

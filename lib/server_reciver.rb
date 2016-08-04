@@ -40,16 +40,3 @@ class ServerReciver
   end
 
 end
-
-class Loopback
-
-  def initialize(router)
-    @router = router
-  end
-
-  def send(signal, data, arguments={})
-    data = {'source_id' => '0', 'signal'=>signal, 'payload'=>data, 'arguments'=>arguments}
-    @router.route('127.0.0.1', '0', data)
-  end
-
-end
