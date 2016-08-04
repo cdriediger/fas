@@ -134,15 +134,7 @@ class RemoteAction
 
   def initialize(client, remote_signal, arguments={})
     $Log.info("Adding RemoteAction: #{remote_signal} on #{client.id} with arguments #{arguments}")
-    #if client.is_a?(Clients)
-    #  @clients = client
-    #elsif client.is_a?(ClientGroup)
-    #  @clients = {client.name => client}
-    #elsif client.is_a?(Client)
-    #  @clients = {client.id => client}
-    #end
     @client = client
-    $Log.info("RemoteAction Clients: #{@clients}")
     @remote_signal = remote_signal
     @arguments = arguments
     client.add_remote_signal(remote_signal)
@@ -185,6 +177,14 @@ class RoutingTable < Hash
     end
   end
 
+  def remove_signal(signal)
+    if self.has_key?(signal)
+      self.delete(signal)
+    else
+      $Log.error("No such Signal")
+    end
+  end
+
   def add_config_actionlists
     return unless @site_config['actions']
     @site_config['actions'].each do |name, content|
@@ -196,6 +196,18 @@ class RoutingTable < Hash
         actionlist.add_action(remote_action) if remote_action
       end
       add_signal(name, actionlist)
+    end
+  end
+
+  def add_config_inputs
+    $Log.info("Adding inputs")
+    @site_config['inputs'].each do |name, action|
+      $Log.info("  Routing input: #{name} to action: #{action}")
+      if self.has_key?(action)
+        add_signal(name, self[action])
+      else
+        add_signal(name, create_remote_action(action, {}))
+      end
     end
   end
 
@@ -214,26 +226,6 @@ class RoutingTable < Hash
       return remote_action
     else
       $Log.error("Error on Config. No such client: #{dest_client_id}")
-    end
-  end
-
-  def add_config_inputs
-    $Log.info("Adding inputs")
-    @site_config['inputs'].each do |name, action|
-      $Log.info("  Routing input: #{name} to action: #{action}")
-      if self.has_key?(action)
-        add_signal(name, self[action])
-      else
-        add_signal(name, create_remote_action(action, {}))
-      end
-    end
-  end
-
-  def remove_signal(signal)
-    if self.has_key?(signal)
-      self.delete(signal)
-    else
-      $Log.error("No such Signal")
     end
   end
 
