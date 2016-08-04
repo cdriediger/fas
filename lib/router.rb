@@ -202,7 +202,7 @@ class RoutingTable < Hash
   def create_remote_action(action, arguments)
     actionname, dest_client_id = action.split('@')
     pluginname, pluginmethodname = actionname.split('.')
-    $Log.info("  Adding remote Action: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}, Client_ID: #{dest_client_id}")
+    $Log.info("  Adding remote Action: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}, Client_ID: #{dest_client_id}, Arguments: #{arguments}")
     unless dest_client_id
       $Log.error("  Local Actions are not supported: Pluginname: #{pluginname}, Plugin Method Name: #{pluginmethodname}")
       return nil
