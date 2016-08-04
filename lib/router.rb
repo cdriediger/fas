@@ -153,12 +153,8 @@ end
 
 class RoutingTable < Hash
 
-  def initialize(site_config=nil)
+  def initialize(site_config={}, clients={})
     @site_config = site_config
-    @clients = nil
-  end
-
-  def set_clients(clients)
     @clients = clients
   end
 
@@ -201,12 +197,14 @@ class RoutingTable < Hash
 
   def add_config_inputs
     $Log.info("Adding inputs")
+    return unless @site_config['inputs']
     @site_config['inputs'].each do |name, action|
       $Log.info("  Routing input: #{name} to action: #{action}")
       if self.has_key?(action)
         add_signal(name, self[action])
       else
-        add_signal(name, create_remote_action(action, {}))
+        remote_action = create_remote_action(action, {})
+        add_signal(name, remote_action) if remote_action
       end
     end
   end
@@ -221,7 +219,6 @@ class RoutingTable < Hash
     end
     if @clients.has_key?(dest_client_id)
       client = @clients[dest_client_id]
-      $Log.error("Got client list: #{client}")
       remote_action = RemoteAction.new(client, actionname, arguments)
       return remote_action
     else
