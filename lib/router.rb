@@ -134,26 +134,26 @@ class RemoteAction
 
   def initialize(client, remote_signal, arguments={})
     $Log.info("Adding RemoteAction: #{remote_signal} on #{client.id} with arguments #{arguments}")
-    if client.is_a?(Clients)
-      @clients = client
-    elsif client.is_a?(ClientGroup)
-      @clients = {client.name => client}
-    elsif client.is_a?(Client)
-      @clients = {client.id => client}
-    end
+    #if client.is_a?(Clients)
+    #  @clients = client
+    #elsif client.is_a?(ClientGroup)
+    #  @clients = {client.name => client}
+    #elsif client.is_a?(Client)
+    #  @clients = {client.id => client}
+    #end
+    @client = client
+    $Log.info("RemoteAction Clients: #{@clients}")
     @remote_signal = remote_signal
     @arguments = arguments
     client.add_remote_signal(remote_signal)
   end
 
   def call(id, payload, arguments=nil)
-    @clients.each_pair do |clientid, client|
-      $Log.info("Called RemoteAction. Sending #{@remote_signal}||#{payload}||#{@arguments} to #{client.id} SourceID: #{id}")
-      if client.online?
-        client.send(@remote_signal, payload, @arguments, source_id=id)
-      else
-        $Log.error("  Destination Client #{client.ip}:#{client.port} is offline")
-      end
+    $Log.info("Called RemoteAction. Sending #{@remote_signal}||#{payload}||#{@arguments} to #{@client.id} SourceID: #{id}")
+    if @client.online?
+      @client.send(@remote_signal, payload, @arguments, source_id=id)
+    else
+      $Log.error("  Destination Client #{client.ip}:#{client.port} is offline")
     end
   end
 
@@ -209,6 +209,7 @@ class RoutingTable < Hash
     end
     if @clients.has_key?(dest_client_id)
       client = @clients[dest_client_id]
+      $Log.error("Got client list: #{client}")
       remote_action = RemoteAction.new(client, actionname, arguments)
       return remote_action
     else

@@ -34,7 +34,7 @@ class Clients < Hash
         end
       end
     end
-    @ping_thread = Thread.new{self.check_online}
+    #@ping_thread = Thread.new{self.check_online}
   end
 
   def close()
@@ -143,32 +143,33 @@ class Clients < Hash
 
 end
 
-class ClientGroup < Array
+class ClientGroup
 
   def initialize(name)
     $Log.info("Creating new clientGroup #{name}")
     @name = name
+    @clients = []
   end
 
   def add_client(client)
     $Log.info("Adding client #{client.id} to clientGroup #{@name}")
-    self << client
+    @clients << client
     client.add_to_clientgroup(@name)
   end
 
   def add_remote_signal(signalname)
-    self.each do |client|
+    @clients.each do |client|
       client.add_remote_signal(signalname) if client.is_a?(Client)
     end
   end
 
-  def send(signal, data, arguments={}, source_id="0")
-    self.each do |client|
+  def send(remote_signal, payload, arguments={}, source_id="0")
+    @clients.each do |client|
       if client.online?
-        client.send(signal, data, source_id)
-        puts "Sending remoteAction to client: #{client.id}"
+        $Log.info("Sending remoteAction to client: #{client.id}")
+        client.send(remote_signal, payload, arguments, source_id)
       else
-        puts "client #{client.id} is offline"
+        $Log.info("client #{client.id} is offline")
       end
     end
   end
@@ -282,11 +283,11 @@ class Client
     end
   end
 
-  def send(signal, data, arguments={}, source_id="0")
+  def send(remote_signal, payload, arguments={}, source_id="0")
     if online?
       begin
         Timeout::timeout(2) do
-          packet = FasProtocol.generate(source_id, signal, data, arguments)
+          packet = FasProtocol.generate(source_id, remote_signal, payload, arguments)
           @socket.puts(packet)
           $Log.info("send #{packet} to #{@ip}:#{@port}")
         end
@@ -307,7 +308,7 @@ class Client
   attr_reader :port
   attr_reader :room
   attr_reader :plugins
-  attr_reader :remote_signals
+  attr_reader :remote_signal
   attr_reader :comment
   attr_reader :clientgroups
   attr_accessor :ping_reply_queue
