@@ -1,8 +1,10 @@
 class Connection
 
   def initialize(server_ip, server_port, restart_method)
+    # Initialize connection parameter
     @server_ip = server_ip
     @server_port = server_port
+    # Use this Method if connect(reconnect=true) is called
     @restart_method = restart_method
     @connected = false
   end
@@ -12,18 +14,24 @@ class Connection
   end
 
   def server_offline(ip=nil, server_ip=@server_ip)
+    # Method gets called if server send "going offline" message
     $Log.info("Server #{server_ip} is offline")
+    # Test if message comes from the correct server
     if server_ip == @server_ip
+      # close connection to server 
       close(server_offline=true)
       sleep(1)
       $Log.info("Try reconnecting to server ..")
+      # start reconnect loop
       connect(reconnect=true)
     else
+      # Ignore "going offline" message
       $Log.error("Got 'server_offline' from wrong server")
     end
   end
 
   def connect(reconnect=false)
+    # Do the actual connect
     loop do
       $Log.info("Connecting to Server #{@server_ip}:#{@server_port}")
       @transmitter = Transmiter.new(@server_ip, @server_port)
