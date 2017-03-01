@@ -4,7 +4,7 @@ require 'dante'
 require 'yaml'
 require_relative 'lib/fas-server.rb'
 
-$server_config_path = File.absolute_path("./etc/config_server.yaml")
+$server_config_path = File.absolute_path("./etc/server.conf")
 if File.exist?($server_config_path)
   $server_config = YAML.load_file($server_config_path)
 else
