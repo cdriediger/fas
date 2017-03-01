@@ -6,15 +6,15 @@ require 'socket'
 require 'timeout'
 require 'yaml'
 require 'rufus/scheduler'
-require './lib/router.rb'
-require './lib/plugins.rb'
-require './lib/fas-protocol.rb'
-require './lib/logger.rb'
+require_relative 'router.rb'
+require_relative 'plugins.rb'
+require_relative 'fas-protocol.rb'
+require_relative 'logger.rb'
 
 #Client require
-require './lib/client_connection.rb'
-require './lib/transmiter.rb'
-require './lib/client_reciver.rb'
+require_relative 'client_connection.rb'
+require_relative 'transmiter.rb'
+require_relative 'client_reciver.rb'
 
 
 class FasClient

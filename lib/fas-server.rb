@@ -6,15 +6,15 @@ require 'socket'
 require 'timeout'
 require 'yaml'
 require 'rufus/scheduler'
-require './lib/router.rb'
-require './lib/plugins.rb'
-require './lib/fas-protocol.rb'
-require './lib/logger.rb'
+require_relative 'router.rb'
+require_relative 'plugins.rb'
+require_relative 'fas-protocol.rb'
+require_relative 'logger.rb'
 
 #Server require
 require 'securerandom'
-require './lib/server_clients.rb'
-require './lib/server_reciver.rb'
+require_relative 'server_clients.rb'
+require_relative 'server_reciver.rb'
 
 
 class FasServer

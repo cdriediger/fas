@@ -2,7 +2,7 @@
 
 require 'dante'
 require 'yaml'
-require './lib/fas-client.rb'
+require_relative 'lib/fas-client.rb'
 
 $client_config_path = File.absolute_path("./etc/config_client.yaml")
 if File.exist?($client_config_path)
