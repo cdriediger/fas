@@ -169,7 +169,7 @@ class RoutingTable < Hash
   def add_signal(signal, action)
     signal = signal.to_s if signal.is_a?(Symbol)
     if self.has_key?(signal)
-      $Log.error("Signal already exists")
+      $Log.error("Signal exists")
     else
       $Log.info("Added Signal '#{signal}' routed to '#{action}'")
       self[signal] = action
