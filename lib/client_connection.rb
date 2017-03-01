@@ -67,7 +67,7 @@ class Connection
   end
 
   def send_testsignal
-    puts("Sending Signal")
+    $Log.info("Sending TestSignal")
     self.send(:testsignal, true)
   end
 

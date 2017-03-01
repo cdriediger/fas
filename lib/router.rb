@@ -123,7 +123,7 @@ class Actionlist
 
   def call(id, data, arguments=nil)
     @actions.each do |action|
-      puts("Calling #{action} from Actionlist #{@name}")
+      $Log.info("Calling #{action} from Actionlist #{@name}")
       action.call(id, data)
     end
   end

@@ -9,7 +9,7 @@ require 'rufus/scheduler'
 require_relative 'router.rb'
 require_relative 'plugins.rb'
 require_relative 'fas-protocol.rb'
-require_relative 'logger.rb'
+require_relative 'logger2.rb'
 
 #Server require
 require 'securerandom'
@@ -20,10 +20,6 @@ require_relative 'server_reciver.rb'
 class FasServer
 
   def initialize(server_config_file)
-    # Start Logging
-    $Log = Log.new('server_log')
-    $Log.level = Logger::DEBUG
-    $Log.info('Start FasServer')
     # Set role (server|client)
     $role = :server
     # Show Exception risen in Threads
@@ -32,12 +28,22 @@ class FasServer
     # Load server config
     @config_path = File.absolute_path(server_config_file)
     if not File.exists?(@config_path)
-      $Log.fatal_error("Could not find Config at: #{@config_path}")
+      puts "Could not find Config at: #{@config_path}"
+      Kernel.exit!
     else
       @config = YAML.load_file(@config_path)
-      $Log.info(@config)
-      $Log.info("Loading client config from: #{@config_path}")
     end
+
+    #Configure Logging
+    $Log = Logging.logger['fas_server']
+    if @config.has_key?('log_level')
+      $Log.level = @config['log_level'].to_sym
+    else
+      $Log.level = :warn
+    end
+    $Log.add_appenders(Logging.appenders.stdout) if @config['log_stdout'] if @config.has_key?('log_stdout')
+    $Log.add_appenders(Logging.appenders.file(File.absolute_path(@config['log_file']))) if @config.has_key?('log_file')
+    $Log.info('Start FasServer')
     
     # Load site config
     @site_config_path = File.absolute_path(@config['site_config'])
@@ -92,7 +98,7 @@ class FasServer
     @reciver = ServerReciver.new($server_ip, $server_port, @router)
 
     # Debugoutput out routingtable
-    puts '--------------'
+    $Log.info('--------------')
     @routingtable.each_pair do |signal, action|
       if action.is_a?(RemoteAction)
         $Log.info("#{signal.to_s} -> #{action} on #{action.client}")
@@ -101,7 +107,7 @@ class FasServer
         $Log.info("#{signal.to_s} -> #{action}")
       end
     end
-    puts '--------------'
+    $Log.info('--------------')
   end
 
   def run

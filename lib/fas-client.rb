@@ -9,7 +9,7 @@ require 'rufus/scheduler'
 require_relative 'router.rb'
 require_relative 'plugins.rb'
 require_relative 'fas-protocol.rb'
-require_relative 'logger.rb'
+require_relative 'logger2.rb'
 
 #Client require
 require_relative 'client_connection.rb'
@@ -20,10 +20,6 @@ require_relative 'client_reciver.rb'
 class FasClient
 
   def initialize(client_config_file)
-    # Start Logging
-    $Log = Log.new('./client_log')
-    $Log.level = Logger::DEBUG
-    $Log.info('Start FasClient')
     # Set role (server|client)
     $role = :client
     # Show Exception risen in Threads
@@ -32,11 +28,22 @@ class FasClient
     # Load client config
     @config_path = client_config_file
     if not File.exists?(@config_path)
-      $Log.fatal_error("Could not find Config at: #{@config_path}")
+      puts("Could not find Config at: #{@config_path}")
+      Kernel.exit!
     else
       @config = YAML.load_file(@config_path)
-      $Log.info("Loading client config from: #{@config_path}")
     end
+
+    #Configure Logging
+    $Log = Logging.logger['fas_client']
+    if @config.has_key?('log_level')
+      $Log.level = @config['log_level'].to_sym
+    else
+      $Log.level = :warn
+    end
+    $Log.add_appenders(Logging.appenders.stdout) if @config['log_stdout'] if @config.has_key?('log_stdout')
+    $Log.add_appenders(Logging.appenders.file(File.absolute_path(@config['log_file']))) if @config.has_key?('log_file')
+    $Log.info('Start FasClient') 
           
     # get client id from config
     unless @config.has_key?('name')
