@@ -45,6 +45,7 @@ actions:
   log_at_group1:
     Fas_Logger.info@group1:
       log_level: 'error'
+    Pushover.notify@*:
   notify_via_pushover:
     Pushover.notify@client1:
 
