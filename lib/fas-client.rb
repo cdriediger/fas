@@ -6,7 +6,6 @@ require 'socket'
 require 'timeout'
 require 'yaml'
 require 'rufus/scheduler'
-require './lib/client_reciver.rb'
 require './lib/router.rb'
 require './lib/plugins.rb'
 require './lib/fas-protocol.rb'
@@ -15,6 +14,7 @@ require './lib/logger.rb'
 #Client require
 require './lib/client_connection.rb'
 require './lib/transmiter.rb'
+require './lib/client_reciver.rb'
 
 
 class FasClient
